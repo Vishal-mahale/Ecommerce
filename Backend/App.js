@@ -7,6 +7,11 @@ app.use(express.json())
 app.use(cookieParser())
 // app.use(bodyParser())
 
+
+//& To use the error middleware
+const errorMiddleware = require('./middleware/error')
+app.use(errorMiddleware) //middeleware
+
 // router import
 const product = require('./routes/productRoute')
 const user = require('./routes/userRoute')
@@ -16,9 +21,6 @@ app.use('/api/v1', product)
 app.use('/api/v1', user)
 app.use('/api/v1', order)
 
-//& To use the error middleware
-const errorMiddleware = require('./middleware/error')
-app.use(errorMiddleware) //middeleware
 
 module.exports = app
 

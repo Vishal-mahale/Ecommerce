@@ -4,14 +4,12 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
 
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
+  
   const { token } = req.cookies
   // console.log(token)
   if (token == 'j:null') {
-    //why
     return next(new ErrorHandler(401, 'Please login to access the resource'))
   }
-
-  // console.log(7867)
   const decodedata = jwt.verify(token, process.env.JWT_SECRET)
   req.user = await User.findById(decodedata.id)
   next()
@@ -28,3 +26,4 @@ exports.authrizeRoles = (...roles) => {
     next()
   }
 }
+// The above code is returning the middleware fucntion that will get called when the route is hit.

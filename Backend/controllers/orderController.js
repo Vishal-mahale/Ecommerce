@@ -34,6 +34,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 })
 
 //Getting a single order :- by giving the order id
+// In a populate method, the first argument is the field to populate, and the second argument is the fields to select from the populated document.
 exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
     'user',
@@ -77,6 +78,7 @@ exports.getAllOrder = catchAsyncErrors(async (req, res, next) => {
 
 //Updating the order status
 exports.updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
+  
   const order = await Order.findById(req.params.id)
 
   if (!order) {
@@ -104,7 +106,6 @@ exports.updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
 async function updateStock (id, quantity) {
   const product = await Product.findById(id)
   product.stock -= quantity
-  console.log(909)
   product.save({ validateBeforeSave: false })
 }
 

@@ -1,0 +1,82 @@
+To handle the error created a middleware function.
+1. created one custom error handle class. Extended a error class.
+class ErrorHandler extends Error {
+   constructor(message,statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+   }
+   Error.stackStrace(this,this.constructor);
+}
+2. created a middleware to handle error passed through next() middleware.
+module.exports = (err,req,res,next,) {
+
+}--->Here the 'err' comes form a next(New ErrorHandler(404,"Not found"));
+
+_________________________________________________________
+
+To handle async error --> Created a catchAsyncError fucntion.
+When we use aysnc/await we have to enclose the code in a try/catch.
+Instead using the try catch every where define one fucntion will handle async errors.
+
+module.exports = theFunc => (req, res, next) => {
+  return Promise.resolve(theFunc(req, res, next)).catch(next)
+}
+
+** same as (Higher order function accepting a fucntion and returing a function.)
+
+/ function catchAsyncErrors(theFunc) {
+//   return function(req, res, next) {
+//     return Promise.resolve(theFunc(req, res, next)).catch(next)
+//   }
+// }
+
+Why returning a function is essential :- If we didn’t return a function:
+We couldn’t give Express a (req, res, next) handler.
+Errors wouldn’t be caught automatically.
+catchAsyncErrors would run immediately at startup instead of when a request arrives.
+
+You call catchAsyncErrors(getSingleOrder) at the time of defining the route.
+This returns a new function (req, res, next) => { ... }.
+Express stores this new function as the middleware for that route.
+When a request hits that route, Express calls the inner function, passing req, res, next.
+Inside that inner function, we run your original getSingleOrder wrapped in Promise.resolve(...).catch(next) so errors go to the error handler.
+
+
+_________________________________________________________
+
+When you use Promises (or async/await) in JavaScript, you’re saying:
+“Run this code and either resolve it (success) or reject it (error).”
+If a Promise rejects (something goes wrong) but you don’t handle that rejection, Node.js calls it an Unhandled Promise Rejection.
+Unhandled rejections can crash your application (in newer Node versions).
+
+Use the catch block to the promise to handle it or you can write a handler.
+This will handle the error and shut down the node server.
+
+similar function can be written for the uncaughtErrors. But write it at the top.
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Promise Rejection:', reason)
+  // Optionally shut down the server:
+  process.exit(1)
+})
+
+===============================================================================================
+Handling the query for paramaers and pagination.
+
+Created one class called the api features. passing two arguemnt to the class. 
+query and the qweryStr.
+
+query = Product.find()   ->query is like a very big object with a lot of parameters.
+queryStr = name="laptop" or page = 2  Ex:- { category: 'Laptops', name: 'Godrej' }
+
+/ In a populate method, the first argument is the field to populate, and the second argument is the fields to select from the populated document.
+=========================================================================================
+
+For user authentication and user athorization :-
+We are going to install some packages. 
+such as bcryptjs, jwswebtoken,validator,nodemailer,body-parser,cookir-parser
+bcryptjs -> for encrypting the password before saving it to the mongodb database.
+jwswebtoken -> for generating the jwswebtoken and saving them into the cookie so that we can use them later fot auhentication.
+cookie-parser is a middleware that lets you read and parse cookies from the client’s request.
+
+  

@@ -1,13 +1,14 @@
 {
   "name": "ecommerce",
   "version": "1.0.0",
+  "description": "",
   "main": "Backend/Server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node Backend/Server.js",
     "dev": "nodemon Backend/Server.js"
   },
-  "author": "Vishal Mahale",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -21,15 +22,5 @@
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
     "validator": "^13.11.0"
-  },
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Vishal-mahale/Ecommerce.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Vishal-mahale/Ecommerce/issues"
-  },
-  "homepage": "https://github.com/Vishal-mahale/Ecommerce#readme",
-  "description": ""
+  }
 }

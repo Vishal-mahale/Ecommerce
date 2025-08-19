@@ -5,3 +5,10 @@ module.exports = theFunc => (req, res, next) => {
 // module.exports = fn => (req, res, next) => {
 //   return Promise.resolve(fn(req, res, next)).catch(next)
 // }
+
+
+// function catchAsyncErrors(theFunc) {
+//   return function(req, res, next) {
+//     return Promise.resolve(theFunc(req, res, next)).catch(next)
+//   }
+// }

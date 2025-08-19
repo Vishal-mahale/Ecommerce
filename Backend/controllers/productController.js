@@ -6,19 +6,21 @@ const ApiFeature = require('../utils/apifeatures')
 //^ for admin - Create a product
 exports.createProduct = catchAsyncErrors(async (req, res) => {
   
-  req.body.user = req.user.id
-  const product = await Product.create(req.body)
+  // req.body.user = req.user.id
+  const product = await Product.create(req.body)  
+  
   res.status(201).json({
     success: true,
     product
   })
-  
+
 })
 
 //^ Get all the products
 exports.getAllProducts = catchAsyncErrors(async (req, res) => {
   let resultPerPage = 5 //per page value for pagination
   const productCount = await Product.countDocuments()
+  
   const apifeature = new ApiFeature(Product.find(), req.query)
     .search()
     .filter()

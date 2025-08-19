@@ -28,6 +28,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   //     user,
   //     token
   //   })
+
   sendToken(user, 200, res, 'user added successfully')
 })
 
@@ -56,6 +57,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   //     user,
   //     token
   //   })
+
   sendToken(user, 200, res, 'Logged in successfully')
 })
 
@@ -79,7 +81,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
   if (!user) {
     return next(new ErrorHandler(404, 'user not found'))
   }
-  // console.log(user)
+
   //Get reset password token
   const resetToken = user.getResetPasswordToken()
 
@@ -87,12 +89,11 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
   const resetPasswordURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/vi/password/reset/${req.resetToken}`
+  )}/api/v1/password/reset/${resetToken}`
 
   const message = `Your reset password token is:- \n\n ${resetPasswordURL} \n\n if you have not requested this email, Please ignore it`
 
   try {
-    //Calling a function to send mail.
     await sendEmail({
       email: user.email,
       subject: 'Email Password Recovery',
@@ -114,7 +115,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
 //function for a forgot password
 exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
-  this.resetPasswordToken = crypto
+  const resetPasswordToken = crypto
     .createHash('sha256')
     .update(req.params.token) //Check variable name
     .digest('hex')
@@ -123,6 +124,8 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     resetPasswordToken,
     resetPasswordExpires: { $gt: Date.now() }
   }) //query to get user.
+
+  console.log(user)
 
   if (!user) {
     return next(
@@ -220,7 +223,6 @@ exports.getUser = catchAsyncErrors(async (req, res, next) => {
   })
 })
 
-
 //For Updateing the user role - for admin only
 exports.updateRole = catchAsyncErrors(async (req, res, next) => {
   const newUser = {
@@ -239,7 +241,6 @@ exports.updateRole = catchAsyncErrors(async (req, res, next) => {
     user
   })
 })
-
 
 //For deleting the user profile :- For admin only
 exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
@@ -260,9 +261,9 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
   })
 })
 
-
 //For Creating and the updating the review
 exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
+
   const { rating, comment, productId } = req.body
   const review = {
     user: req.user._id,
@@ -292,7 +293,7 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
   product.reviews.forEach(rev => {
     avg += rev.rating
   })
-  product.rating = Math.floor(avg / product.reviews.length) //?
+  product.rating = Math.floor(avg / product.reviews.length) 
 
   await product.save({ validateBeforeSave: false })
   res.status(200).json({
@@ -300,7 +301,6 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
     message: 'Review is added successfully'
   })
 })
-
 
 // for geting the all the product reviews
 exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
@@ -314,7 +314,6 @@ exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
   })
 })
 
-
 // for deleting the reviews
 exports.deleteReviews = catchAsyncErrors(async (req, res, next) => {
   let rating = 0
@@ -326,7 +325,7 @@ exports.deleteReviews = catchAsyncErrors(async (req, res, next) => {
   }
 
   const reviews = product.reviews.filter(
-    rev => rev.user.toString() !== req.query.id.toString()
+    rev => rev.user.toString() !== req.query.id.toString() // query.id is product id.
   )
 
   if (reviews.length > 0) {

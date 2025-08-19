@@ -13,10 +13,10 @@ const {
 
 router.route('/products').get(getAllProducts)
 
-router.route('/admin/products/new').post(isAuthenticatedUser,authrizeRoles('admin'), createProduct)
+router.route('/admin/products/new').post(createProduct)
 router.route('/admin/products/:id').put(isAuthenticatedUser,authrizeRoles('admin'), updateProduct)
-router.route('/admin/products/:id').delete(isAuthenticatedUser,authrizeRoles('admin'), deleteProduct)
+router.delete('/admin/products/:id',isAuthenticatedUser,authrizeRoles('admin'), deleteProduct)
 
-router.route('/products/:id').get(getProductDetails)
+router.get('/products/:id',getProductDetails)
 
 module.exports = router

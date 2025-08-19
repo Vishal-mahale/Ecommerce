@@ -41,8 +41,11 @@ const userSchema = new mongoose.Schema({
   resetPasswordExpires: Date
 })
 
-//This is a event. will get called when userSchema will get save.second argumet is callback function.
-//we have a different methods for password and user update.when we are updating user details then we are not updating password. Also not calling the encryptuion again . iT might cauus eproblem.
+//This is a event. will get called when userSchema will get save.
+// second argumet is callback function.
+//we have a different methods for password and user update.
+// when we are updating user details then we are not updating password. 
+// Also not calling the encryptuion again . it might caus problem.
 //If password is change then called ecryption again.
 
 userSchema.pre('save', async function (next) {
@@ -55,7 +58,7 @@ userSchema.pre('save', async function (next) {
 
 // JWT Token
 // we will generate a token and store it in a coockie.so that the user can ne identified.
-// Use dont have to login after registration.after log have to register.
+// User dont have to login after registration. 
 
 userSchema.methods.getJWTToken = function () {
   return jwtToken.sign({ id: this._id }, process.env.JWT_SECRET, {
@@ -64,25 +67,25 @@ userSchema.methods.getJWTToken = function () {
 }
 
 //function to validate the password.
-userSchema.methods.comparePassword = async function (userEmail) {
-  return await bcryptjs.compare(userEmail, this.password)
+userSchema.methods.comparePassword = async function (enteredPass) {
+  return await bcryptjs.compare(enteredPass, this.password)
 }
 
-//Generating password reseting token.
 userSchema.methods.getResetPasswordToken = function () {
-  //generating a token
+  // Generate plain reset token
   const resetToken = crypto.randomBytes(20).toString('hex')
 
-  //Hashing and adding the reset password shema to userSchema
+  // Hash it and set to user schema
   this.resetPasswordToken = crypto
     .createHash('sha256')
-    .update('resetToken')
+    .update(resetToken)   // ✅ use variable, not string
     .digest('hex')
 
-  //setting the expiration time for a token
-  this.resetPasswordExpires = Date.now() * 15 * 60 * 1000 //in  minilisconds
+  // Set token expiry (15 minutes from now)
+  this.resetPasswordExpires = Date.now() + 15 * 60 * 1000  // ✅ add, not multiply
 
   return resetToken
 }
+
 
 module.exports = mongoose.model('User', userSchema)
